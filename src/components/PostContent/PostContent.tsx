@@ -1,11 +1,14 @@
 import React from "react";
 import { PostHeading } from "../PostHeading";
+import { PostDate } from "../PostDate";
+import { formatDateTime } from "@/utils/formate-datetime";
 
 type PostContentProps = {
   title: string;
   children: React.ReactNode;
   createdAt: string;
   url: string;
+  as?: "h1" | "h2";
 };
 
 export function PostContent({
@@ -13,18 +16,19 @@ export function PostContent({
   children,
   createdAt,
   url,
+  as: titleSize = "h2",
 }: PostContentProps) {
   return (
     <>
       <div className='flex sm:justify-center flex-col gap-3'>
-        <time
-          className='text-slate-600 text-sm/tight block'
-          dateTime={createdAt}
+        <PostDate
+          styles='text-slate-600 text-sm/tight block'
+          createdAt={createdAt}
         >
-          {createdAt}
-        </time>
+          {formatDateTime(createdAt)}
+        </PostDate>
 
-        <PostHeading as='h2' url={url}>
+        <PostHeading as={titleSize} url={url}>
           {title}
         </PostHeading>
 

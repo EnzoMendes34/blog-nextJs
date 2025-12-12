@@ -1,5 +1,5 @@
+import { PostContent } from "../PostContent/PostContent";
 import { PostCoverImage } from "../PostCoverImage";
-import { PostHeading } from "../PostHeading";
 
 export function FeaturedPost() {
   const slug = "qualquer";
@@ -21,26 +21,17 @@ export function FeaturedPost() {
           }}
         />
         <div className='justify-center flex sm:justify-center flex-col gap-3'>
-          <time
-            className='text-slate-600 text-sm/tight block'
-            dateTime='2025-04-20'
+          <PostContent
+            title={"Rotina matinal de pessoas altamente eficazes"}
+            createdAt={"2025-04-08T00:24:38.616Z"}
+            url={"#"}
+            as={"h1"}
           >
-            20/04/2025 11:59
-          </time>
-
-          <PostHeading as='h1' url={postLink}>
-            Post title, Just testing
-          </PostHeading>
-
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed
-            eligendi ex, animi perferendis iure vel quidem beatae iste commodi
-            enim velit cum quibusdam earum numquam corrupti omnis labore
-            deserunt nobis. Lorem ipsum dolor sit amet consectetur adipisicing
-            elit. Sed eligendi ex, animi perferendis iure vel quidem beatae iste
-            commodi enim velit cum quibusdam earum numquam corrupti omnis labore
-            deserunt nobis.
-          </p>
+            This is a test, Lorem ipsum dolor sit amet consectetur adipisicing
+            elit. Corporis harum magnam eaque, obcaecati nostrum ipsam dolorum
+            saepe provident nemo quasi illum tempore illo vel, beatae optio unde
+            ducimus similique pariatur.
+          </PostContent>
         </div>
       </section>
     </>
