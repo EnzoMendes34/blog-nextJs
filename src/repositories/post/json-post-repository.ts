@@ -29,20 +29,28 @@ export class JsonPostRepository implements PostRepository {
     return posts;
   }
 
-  async findAll(): Promise<PostModel[]> {
+  async findAllPublic(): Promise<PostModel[]> {
     await this.simulateWait();
 
     const posts = await this.readFromDisk();
-    return posts;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return posts.filter((post: { published: any }) => post.published);
   }
 
   async findById(id: string): Promise<PostModel> {
-    await this.simulateWait();
-
-    const posts = await this.findAll();
+    const posts = await this.findAllPublic();
     const post = posts.find(post => post.id === id);
 
-    if (!post) throw new Error("Post não encontrado");
+    if (!post) throw new Error("Post não encontrado o ID inserido");
+
+    return post;
+  }
+
+  async findBySlug(slug: string): Promise<PostModel> {
+    const posts = await this.findAllPublic();
+    const post = posts.find(post => post.slug === slug);
+
+    if (!post) throw new Error("Post não encontrado para esse slug");
 
     return post;
   }
