@@ -1,10 +1,10 @@
-import { postRepository } from "@/repositories/post";
 import { PostCoverImage } from "../PostCoverImage";
 import { PostContent } from "../PostContent/PostContent";
 import clsx from "clsx";
+import { findAllPublicPostsCached } from "@/lib/post/queries";
 
 export async function PostsList() {
-  const posts = await postRepository.findAllPublic();
+  const posts = await findAllPublicPostsCached();
 
   return (
     <>
@@ -17,7 +17,7 @@ export async function PostsList() {
           "lg:grid-cols-3",
         )}
       >
-        {posts.map(post => {
+        {posts.slice(1).map(post => {
           const postLink = `/post/${post.slug}`;
 
           return (

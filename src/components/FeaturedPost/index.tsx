@@ -1,9 +1,12 @@
 import { PostContent } from "../PostContent/PostContent";
 import { PostCoverImage } from "../PostCoverImage";
+import { findAllPublicPostsCached } from "@/lib/post/queries";
 
-export function FeaturedPost() {
-  const slug = "qualquer";
-  const postLink = `/post/${slug}`;
+export async function FeaturedPost() {
+  const posts = await findAllPublicPostsCached();
+  const post = posts[0];
+
+  const postLink = `/post/${post.slug}`;
 
   return (
     <>
@@ -15,22 +18,19 @@ export function FeaturedPost() {
           imageProps={{
             width: 1200,
             height: 720,
-            src: "/images/bryen_9.png",
-            alt: "Alt da imagem",
+            src: post.coverImageUrl,
+            alt: post.title,
             priority: true,
           }}
         />
         <div className='justify-center flex sm:justify-center flex-col gap-3'>
           <PostContent
-            title={"Rotina matinal de pessoas altamente eficazes"}
-            createdAt={"2025-04-08T00:24:38.616Z"}
-            url={"#"}
+            title={post.title}
+            createdAt={post.createdAt}
+            url={postLink}
             as={"h1"}
           >
-            This is a test, Lorem ipsum dolor sit amet consectetur adipisicing
-            elit. Corporis harum magnam eaque, obcaecati nostrum ipsam dolorum
-            saepe provident nemo quasi illum tempore illo vel, beatae optio unde
-            ducimus similique pariatur.
+            {post.excerpt}
           </PostContent>
         </div>
       </section>
