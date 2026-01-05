@@ -1,9 +1,19 @@
+import ErrorMessage from "../ErrorMessage";
 import { PostContent } from "../PostContent/PostContent";
 import { PostCoverImage } from "../PostCoverImage";
 import { findAllPublicPostsCached } from "@/lib/post/queries/public";
 
 export async function FeaturedPost() {
   const posts = await findAllPublicPostsCached();
+
+  if (posts.length <= 0)
+    return (
+      <ErrorMessage
+        contentTitle='Ooops!'
+        content='Ainda não criamos nenhum post'
+      />
+    );
+
   const post = posts[0];
 
   const postLink = `/post/${post.slug}`;

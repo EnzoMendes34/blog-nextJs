@@ -8,6 +8,7 @@ type DialogProps = {
   postTitle: React.ReactNode;
   onConfirm: () => void;
   onCancel: () => void;
+  disabled: boolean;
 };
 
 export function Dialog({
@@ -15,8 +16,15 @@ export function Dialog({
   onConfirm,
   postTitle,
   isVisible = false,
+  disabled = false,
 }: DialogProps) {
   if (!isVisible) return null;
+
+  function handleCancel() {
+    if (!disabled) return;
+
+    onCancel();
+  }
 
   return (
     <>
@@ -26,6 +34,7 @@ export function Dialog({
           "backdrop-blur-sm",
           "flex items-center justify-center",
         )}
+        onClick={handleCancel}
       >
         <div
           className={clsx(
@@ -39,6 +48,7 @@ export function Dialog({
           aria-modal={true}
           aria-labelledby='dialog-title'
           aria-describedby='dialog-description'
+          onClick={e => e.stopPropagation()}
         >
           <h3 id='dialog-title' className='text-2xl font-bold'>
             Apagar post?
@@ -51,9 +61,12 @@ export function Dialog({
                 "transition hover:bg-slate-400",
                 "flex items-center justify-center py-2 px-4",
                 "rounded-lg cursor-pointer",
+                "disabled:bg-slate-200 disabled:text-slate-400",
+                "disabled:cursor-not-allowed",
               )}
               autoFocus
-              onClick={onCancel}
+              onClick={handleCancel}
+              disabled={disabled}
             >
               <ThumbsDownIcon />
             </button>
@@ -63,8 +76,11 @@ export function Dialog({
                 "transition hover:bg-slate-400",
                 "flex items-center justify-center py-2 px-4",
                 "rounded-lg cursor-pointer",
+                "disabled:bg-slate-200 disabled:text-slate-400",
+                "disabled:cursor-not-allowed",
               )}
               onClick={onConfirm}
+              disabled={disabled}
             >
               <ThumbsUpIcon />
             </button>

@@ -1,7 +1,7 @@
 import { PostModel } from "@/models/post/post-model";
 import { PostRepository } from "./post-repository";
 import { drizzleDb } from "@/db/drizzle";
-import { desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { postsTable } from "@/db/drizzle/schemas";
 
 export class DrizzlePostRepository implements PostRepository {
@@ -38,5 +38,13 @@ export class DrizzlePostRepository implements PostRepository {
     if (!post) throw new Error("Post não encontrado para esse ID.");
 
     return post;
+  }
+
+  async deleteById(id: string): Promise<void> {
+    const post = this.findById(id);
+
+    if (!post) throw new Error("Post não encontrado para esse ID.");
+
+    await drizzleDb.delete(postsTable).where(eq(postsTable.id, id));
   }
 }
