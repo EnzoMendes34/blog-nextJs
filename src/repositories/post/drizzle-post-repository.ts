@@ -1,6 +1,8 @@
 import { PostModel } from "@/models/post/post-model";
 import { PostRepository } from "./post-repository";
 import { drizzleDb } from "@/db/drizzle";
+import { desc } from "drizzle-orm";
+import { postsTable } from "@/db/drizzle/schemas";
 
 export class DrizzlePostRepository implements PostRepository {
   async findAllPublic(): Promise<PostModel[]> {
@@ -10,6 +12,16 @@ export class DrizzlePostRepository implements PostRepository {
     });
 
     return posts;
+  }
+  async findBySlugPublic(slug: string): Promise<PostModel> {
+    const post = await drizzleDb.query.posts.findFirst({
+      where: (posts, { eq, and }) =>
+        and(eq(posts.published, true), eq(posts.slug, slug)),
+    });
+
+    if (!post) throw new Error("Post não encontrado para essa slug.");
+
+    return post;
   }
   async findAll(): Promise<PostModel[]> {
     const posts = await drizzleDb.query.posts.findMany({
@@ -23,17 +35,7 @@ export class DrizzlePostRepository implements PostRepository {
       where: (posts, { eq }) => eq(posts.id, id),
     });
 
-    if (!post) throw new Error("Post não encontrado para esse id");
-
-    return post;
-  }
-  async findBySlugPublic(slug: string): Promise<PostModel> {
-    const post = await drizzleDb.query.posts.findFirst({
-      where: (posts, { eq, and }) =>
-        and(eq(posts.published, true), eq(posts.slug, slug)),
-    });
-
-    if (!post) throw new Error("Post não encontrado para esse slug");
+    if (!post) throw new Error("Post não encontrado para esse ID.");
 
     return post;
   }

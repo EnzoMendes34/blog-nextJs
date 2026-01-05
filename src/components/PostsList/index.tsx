@@ -1,7 +1,7 @@
 import { PostCoverImage } from "../PostCoverImage";
 import { PostContent } from "../PostContent/PostContent";
 import clsx from "clsx";
-import { findAllPublicPostsCached } from "@/lib/post/queries";
+import { findAllPublicPostsCached } from "@/lib/post/queries/public";
 
 export async function PostsList() {
   const posts = await findAllPublicPostsCached();

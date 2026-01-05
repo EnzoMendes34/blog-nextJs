@@ -1,10 +1,10 @@
-/*import { drizzleDb } from ".";
-import { postsTable } from "./schemas";
+import { DrizzlePostRepository } from "@/repositories/post/drizzle-post-repository";
 
 (async () => {
-  const posts = await drizzleDb.select().from(postsTable);
+  const drizzleRepo = new DrizzlePostRepository();
+  const posts = await drizzleRepo.findAll();
 
   posts.forEach(post => {
     console.log(post.title);
   });
-})();*/
+})();
