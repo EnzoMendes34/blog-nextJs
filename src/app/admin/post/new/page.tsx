@@ -11,7 +11,7 @@ export default async function AdminPostNewPage() {
   return (
     <>
       <div className='flex flex-col gap-6'>
-        <ManagePostForm />
+        <ManagePostForm mode='create' />
       </div>
     </>
   );

@@ -1,12 +1,10 @@
 "use server";
 
 import { postRepository } from "@/repositories/post";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 
 export async function deletePostAction(id: string) {
   //checar login
-
-  //checking post Id
 
   if (!id || typeof id !== "string") {
     return {
@@ -14,15 +12,21 @@ export async function deletePostAction(id: string) {
     };
   }
 
-  const post = await postRepository.findById(id).catch(() => undefined);
+  let post;
 
-  if (!post) {
+  try {
+    post = await postRepository.deleteById(id);
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      return {
+        error: e.message,
+      };
+    }
+
     return {
-      error: "Post não encontrado.",
+      error: "Error desconhecido",
     };
   }
-
-  postRepository.deleteById(id);
 
   revalidatePath("/admin/post");
   revalidatePath(`/post/${post.slug}`);

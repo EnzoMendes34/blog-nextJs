@@ -1,5 +1,4 @@
 import { isUrlOrRelativePath } from "@/utils/is-url-or-relative-path";
-import { except } from "drizzle-orm/gel-core";
 import sanitizeHtml from "sanitize-html";
 import { z } from "zod";
 
@@ -7,7 +6,7 @@ const PostBaseSchema = z.object({
   title: z
     .string()
     .trim()
-    .min(3, "O título deve ter no mínimo 3 caracteres")
+    .min(7, "O título deve ter no mínimo 7 caracteres")
     .max(120, "O título deve ter no máximo 120 caracteres"),
   content: z
     .string()

@@ -1,24 +1,80 @@
 "use client";
 
 import { InputText } from "@/components/InputText";
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { MarkDownEditor } from "../MarkDownEditor";
 import { ImageUploader } from "../ImageUploader";
 import { InputCheckbox } from "@/components/InputCheckbox";
 import { makePartialPublicPost, PublicPost } from "@/dto/post/dto";
-import { createPostAction } from "@/actions/post/creat-post-action";
+import { createPostAction } from "@/actions/post/create-post-action";
+import { toast } from "react-toastify";
+import { Button } from "@/components/Button";
+import { updatePostAction } from "@/actions/post/update-post-action";
+import { useRouter, useSearchParams } from "next/navigation";
 
-type ManagePostFormProps = {
-  publicPost?: PublicPost;
+type ManagePostFormUpdateProps = {
+  mode: "update";
+  publicPost: PublicPost;
 };
 
-export function ManagePostForm({ publicPost }: ManagePostFormProps) {
+type ManagePostFormCreateProps = {
+  mode: "create";
+};
+
+type ManagePostFormProps =
+  | ManagePostFormUpdateProps
+  | ManagePostFormCreateProps;
+
+export function ManagePostForm(props: ManagePostFormProps) {
+  const { mode } = props;
+
+  const searchParams = useSearchParams();
+  const created = searchParams.get("created");
+  const router = useRouter();
+
+  let publicPost;
+  if (mode === "update") {
+    publicPost = props.publicPost;
+  }
+
+  const actionsMap = {
+    update: updatePostAction,
+    create: createPostAction,
+  };
+
   const initialState = {
     formState: makePartialPublicPost(publicPost),
     errors: [],
   };
 
-  const [state, action, isPending] = useActionState(createPostAction, {});
+  const [state, action, isPending] = useActionState(
+    actionsMap[mode],
+    initialState,
+  );
+
+  useEffect(() => {
+    if (state.errors.length > 0) {
+      toast.dismiss();
+      state.errors.forEach(error => toast.error(error));
+    }
+  }, [state.errors]);
+
+  useEffect(() => {
+    if (state.success) {
+      toast.dismiss();
+      toast.success("Post atualizado com sucesso");
+    }
+  }, [state.success]);
+
+  useEffect(() => {
+    if (created === "1") {
+      toast.dismiss();
+      toast.success("Post criado com sucesso");
+      const url = new URL(window.location.href);
+      url.searchParams.delete("created");
+      router.replace(url.toString());
+    }
+  }, [created, router]);
 
   const { formState } = state;
 
@@ -33,6 +89,7 @@ export function ManagePostForm({ publicPost }: ManagePostFormProps) {
             placeholder='ID gerado automaticamente'
             type='text'
             defaultValue={formState.id}
+            disabled={isPending}
             readOnly
           />
 
@@ -42,6 +99,7 @@ export function ManagePostForm({ publicPost }: ManagePostFormProps) {
             placeholder='Slug gerado automaticamente'
             type='text'
             defaultValue={formState.slug}
+            disabled={isPending}
             readOnly
           />
 
@@ -51,6 +109,7 @@ export function ManagePostForm({ publicPost }: ManagePostFormProps) {
             placeholder='Digite o título do Post'
             type='text'
             defaultValue={formState.title}
+            disabled={isPending}
           />
 
           <InputText
@@ -59,6 +118,7 @@ export function ManagePostForm({ publicPost }: ManagePostFormProps) {
             placeholder='Digite o nome do autor do Post'
             type='text'
             defaultValue={formState.author}
+            disabled={isPending}
           />
 
           <InputText
@@ -67,6 +127,7 @@ export function ManagePostForm({ publicPost }: ManagePostFormProps) {
             placeholder='Digite o Resumo do Post'
             type='text'
             defaultValue={formState.excerpt}
+            disabled={isPending}
           />
 
           <MarkDownEditor
@@ -74,9 +135,10 @@ export function ManagePostForm({ publicPost }: ManagePostFormProps) {
             value={contentValue}
             setValue={setContentValue}
             textAreaName='content'
+            disabled={isPending}
           />
 
-          <ImageUploader />
+          <ImageUploader disabled={isPending} />
 
           <InputText
             labelText='URL da imagem de capa'
@@ -84,6 +146,7 @@ export function ManagePostForm({ publicPost }: ManagePostFormProps) {
             placeholder='Digite a url da imagem'
             type='text'
             defaultValue={formState.coverImageUrl}
+            disabled={isPending}
           />
 
           <InputCheckbox
@@ -91,7 +154,12 @@ export function ManagePostForm({ publicPost }: ManagePostFormProps) {
             name='published'
             type='checkbox'
             defaultChecked={formState.published}
+            disabled={isPending}
           />
+
+          <Button size='lg' variant='default' disabled={isPending}>
+            Enviar Post
+          </Button>
         </div>
       </form>
     </>
