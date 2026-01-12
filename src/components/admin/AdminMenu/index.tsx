@@ -1,18 +1,31 @@
 "use client";
 
+import { logoutAction } from "@/actions/login/logout-action";
 import clsx from "clsx";
 import {
   CircleXIcon,
   FileTextIcon,
+  HourglassIcon,
   HouseIcon,
+  LogOutIcon,
   MenuIcon,
   PlusIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
 export function AdminMenu() {
   const [isOpen, setIsOpen] = useState(false);
+
+  const [isPending, startTransition] = useTransition();
+
+  function handleLogout(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
+    e.preventDefault();
+
+    startTransition(async () => {
+      await logoutAction();
+    });
+  }
 
   function closeMenuInChangingPage() {
     setIsOpen(false);
@@ -85,6 +98,20 @@ export function AdminMenu() {
         >
           <PlusIcon /> Criar novo post
         </Link>
+
+        <a href='#' onClick={handleLogout} className={linkClasses}>
+          {isPending && (
+            <>
+              <HourglassIcon /> Aguarde...
+            </>
+          )}
+
+          {!isPending && (
+            <>
+              <LogOutIcon /> Sair
+            </>
+          )}
+        </a>
       </nav>
     </>
   );

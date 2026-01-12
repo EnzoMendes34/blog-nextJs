@@ -4,8 +4,8 @@ type ButtonVariants = "default" | "ghost" | "danger";
 type ButtonSizes = "sm" | "md" | "lg";
 
 type ButtonProps = {
-  variant: ButtonVariants;
-  size: ButtonSizes;
+  variant?: ButtonVariants;
+  size?: ButtonSizes;
 } & React.ComponentProps<"button">;
 
 export function Button({
@@ -50,5 +50,5 @@ export function Button({
     "disabled:text-slate-600",
     "disabled:cursor-not-allowed",
   );
-  return <button className={buttonClasses} {...props} />;
+  return <button {...props} className={buttonClasses} />;
 }
